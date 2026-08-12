@@ -1,0 +1,6 @@
+@NekosAPIWeb_HostAddress = http://localhost:5110
+
+GET {{NekosAPIWeb_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

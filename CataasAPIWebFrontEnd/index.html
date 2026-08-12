@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cataas Finder — busca de gatos</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Sora:wght@400;500;600;700&display=swap');
+
+  :root {
+    --bg: #14121C;
+    --surface: #1E1B2A;
+    --surface-hover: #262238;
+    --accent: #F2A93B;
+    --accent-soft: rgba(242, 169, 59, 0.16);
+    --teal: #57C4BC;
+    --text: #F2EFE8;
+    --text-dim: #A9A3BC;
+    --border: rgba(242, 239, 232, 0.08);
+    --radius: 18px;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    background-image:
+      radial-gradient(circle at 12% 8%, rgba(242,169,59,0.10), transparent 40%),
+      radial-gradient(circle at 88% 92%, rgba(87,196,188,0.10), transparent 40%);
+    color: var(--text);
+    font-family: 'Sora', system-ui, sans-serif;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap {
+    max-width: 920px;
+    margin: 0 auto;
+    padding: 56px 24px 80px;
+  }
+
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 48px;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .brand-mark {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    background: var(--accent-soft);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+  }
+
+  .brand-name {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 18px;
+    letter-spacing: 0.01em;
+  }
+
+  .brand-name span { color: var(--accent); }
+
+  nav#tabs {
+    display: flex;
+    gap: 4px;
+    background: var(--surface);
+    padding: 4px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+  }
+
+  nav#tabs button {
+    border: none;
+    background: transparent;
+    color: var(--text-dim);
+    font-family: 'Sora', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 8px 18px;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  nav#tabs button.active {
+    background: var(--accent);
+    color: #1A1509;
+  }
+
+  .hero {
+    margin-bottom: 40px;
+  }
+
+  .eyebrow {
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--teal);
+    font-weight: 600;
+    margin-bottom: 14px;
+  }
+
+  h1 {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: clamp(32px, 5vw, 48px);
+    line-height: 1.08;
+    margin: 0 0 14px;
+    letter-spacing: -0.01em;
+  }
+
+  h1 em {
+    font-style: italic;
+    color: var(--accent);
+  }
+
+  .hero p {
+    color: var(--text-dim);
+    font-size: 16px;
+    max-width: 480px;
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  .search-panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 8px;
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+
+  .search-panel input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--text);
+    font-family: 'Sora', sans-serif;
+    font-size: 16px;
+    padding: 14px 16px;
+  }
+
+  .search-panel input::placeholder { color: var(--text-dim); }
+
+  .search-panel button {
+    background: var(--accent);
+    color: #1A1509;
+    border: none;
+    border-radius: 12px;
+    padding: 0 26px;
+    font-family: 'Sora', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: transform 0.15s ease, background 0.15s ease;
+  }
+
+  .search-panel button:hover { background: #ffbb52; }
+  .search-panel button:active { transform: scale(0.97); }
+  .search-panel button:disabled { opacity: 0.6; cursor: wait; }
+
+  .whisker {
+    height: 1px;
+    background: linear-gradient(90deg, var(--accent) 0%, transparent 60%);
+    opacity: 0.4;
+    margin: 0 0 36px 4px;
+    width: 140px;
+  }
+
+  #status {
+    min-height: 24px;
+    font-size: 14px;
+    color: var(--text-dim);
+    margin-bottom: 20px;
+  }
+
+  #status.error { color: #F27B6C; }
+  #status.success { color: var(--teal); }
+
+  #grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 16px;
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    transition: transform 0.2s ease, border-color 0.2s ease;
+  }
+
+  .card:hover {
+    transform: translateY(-4px);
+    border-color: var(--accent);
+  }
+
+  .card img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    display: block;
+    background: var(--surface-hover);
+  }
+
+  .card .tags {
+    padding: 12px 14px 14px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .tag {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 9px;
+    border-radius: 999px;
+    background: var(--accent-soft);
+    color: var(--accent);
+    text-transform: lowercase;
+  }
+
+  .empty-state, .loading-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text-dim);
+  }
+
+  .empty-state .glyph, .loading-state .glyph {
+    font-size: 34px;
+    margin-bottom: 12px;
+    display: block;
+  }
+
+  .empty-state p, .loading-state p { margin: 0; font-size: 14px; }
+
+  /* histórico */
+  #history-panel { display: none; }
+  #history-panel.active { display: block; }
+  #search-view.hidden { display: none; }
+
+  .history-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 18px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    margin-bottom: 10px;
+  }
+
+  .history-row .termo {
+    font-weight: 600;
+    font-size: 15px;
+  }
+
+  .history-row .meta {
+    font-size: 12px;
+    color: var(--text-dim);
+    margin-top: 2px;
+  }
+
+  .history-row .count {
+    font-family: 'Fraunces', serif;
+    font-size: 20px;
+    color: var(--teal);
+  }
+
+  footer {
+    margin-top: 60px;
+    text-align: center;
+    font-size: 12px;
+    color: var(--text-dim);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .card, .search-panel button { transition: none; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="brand">
+      <div class="brand-mark">🐾</div>
+      <div class="brand-name">Cataas <span>Finder</span></div>
+    </div>
+    <nav id="tabs">
+      <button id="tab-search" class="active">Buscar</button>
+      <button id="tab-history">Histórico</button>
+    </nav>
+  </header>
+
+  <section id="search-view">
+    <div class="hero">
+      <div class="eyebrow">Cataas API · demo de integração</div>
+      <h1>Encontre o gato <em>certo</em><br>pra cada momento.</h1>
+      <p>Digite uma tag em inglês — "cute", "sleepy", "orange", etc. E receba imagens/gifs de gatos correspondentes direto da API Cataas.</p>
+    </div>
+
+    <div class="search-panel">
+      <input type="text" id="input-termo" placeholder="Ex: orange, cute, brown..." autocomplete="off">
+      <button id="btn-buscar">Buscar</button>
+    </div>
+    <div class="whisker"></div>
+
+    <div id="status"></div>
+    <div id="grid"></div>
+  </section>
+
+  <section id="history-panel">
+    <div class="hero">
+      <div class="eyebrow">Últimas buscas</div>
+      <h1>Seu <em>histórico</em>.</h1>
+      <p>As últimas buscas realizadas, salvas automaticamente pela API.</p>
+    </div>
+    <div id="history-list"></div>
+  </section>
+
+  <footer>Projeto CataasApi — feito pra portfólio 🐱</footer>
+</div>
+
+<script>
+
+const API_BASE_URL = "http://localhost:5110";
+
+
+const inputTermo   = document.getElementById('input-termo');
+const btnBuscar     = document.getElementById('btn-buscar');
+const statusEl      = document.getElementById('status');
+const gridEl        = document.getElementById('grid');
+const historyListEl = document.getElementById('history-list');
+
+const tabSearch    = document.getElementById('tab-search');
+const tabHistory   = document.getElementById('tab-history');
+const searchView   = document.getElementById('search-view');
+const historyPanel = document.getElementById('history-panel');
+
+
+tabSearch.addEventListener('click', () => {
+  tabSearch.classList.add('active');
+  tabHistory.classList.remove('active');
+  searchView.classList.remove('hidden');
+  historyPanel.classList.remove('active');
+});
+
+tabHistory.addEventListener('click', () => {
+  tabHistory.classList.add('active');
+  tabSearch.classList.remove('active');
+  historyPanel.classList.add('active');
+  searchView.classList.add('hidden');
+  carregarHistorico();
+});
+
+
+function mostrarStatus(mensagem, tipo) {
+  statusEl.textContent = mensagem || '';
+  statusEl.className = tipo || '';
+}
+
+function renderizarGrid(imagens) {
+  gridEl.innerHTML = '';
+
+  if (!imagens || imagens.length === 0) {
+    gridEl.innerHTML = `
+      <div class="empty-state" style="grid-column: 1/-1;">
+        <span class="glyph">🐾</span>
+        <p>Nenhum gato encontrado para essa busca.</p>
+      </div>`;
+    return;
+  }
+
+  imagens.forEach(img => {
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.innerHTML = `
+      <img src="${img.url ?? img.Url}" alt="${(img.tags ?? img.Tags ?? []).join(', ')}" loading="lazy">
+      <div class="tags">
+        ${(img.tags ?? img.Tags ?? []).map(t => `<span class="tag">${t}</span>`).join('')}
+      </div>`;
+    gridEl.appendChild(card);
+  });
+}
+
+function renderizarHistorico(historico) {
+  historyListEl.innerHTML = '';
+
+  if (!historico || historico.length === 0) {
+    historyListEl.innerHTML = `
+      <div class="empty-state">
+        <span class="glyph">🕐</span>
+        <p>Nenhuma busca realizada ainda.</p>
+      </div>`;
+    return;
+  }
+
+  historico.forEach(item => {
+    const termo = item.searchContent ?? item.SearchContent;
+    const data = new Date(item.dataHora ?? item.DataHora);
+    const qtd = item.quantidadeResultados ?? item.QuantidadeResultados;
+
+    const row = document.createElement('div');
+    row.className = 'history-row';
+    row.innerHTML = `
+      <div>
+        <div class="termo">${termo}</div>
+        <div class="meta">${data.toLocaleString('pt-BR')}</div>
+      </div>
+      <div class="count">${qtd}</div>`;
+    historyListEl.appendChild(row);
+  });
+}
+
+
+async function buscarGatos(termo) {
+
+  const termoEscapado = encodeURIComponent(termo);
+  const url = `${API_BASE_URL}/api/search?termo=${termoEscapado}`;
+
+  btnBuscar.disabled = true;
+  mostrarStatus('Buscando...', '');
+  gridEl.innerHTML = '';
+
+  try {
+    const response = await fetch(url);
+
+    if (response.status === 400) {
+      mostrarStatus('Digite um termo válido para buscar.', 'error');
+      return;
+    }
+
+    if (!response.ok) {
+      mostrarStatus('Erro ao buscar gatos. Tente novamente.', 'error');
+      return;
+    }
+
+    const resultado = await response.json();
+
+    if (resultado.sucessoBusca) {
+      mostrarStatus(`${resultado.qtdResultados} gato(s) encontrado(s)`, 'success');
+    } else {
+      mostrarStatus(resultado.mensagemBusca, '');
+    }
+
+    renderizarGrid(resultado.resultadoBusca);
+
+  } catch (erro) {
+    mostrarStatus('Não foi possível conectar com a API.', 'error');
+    console.error(erro);
+  } finally {
+    btnBuscar.disabled = false;
+  }
+}
+
+
+async function carregarHistorico() {
+  
+  const url = `${API_BASE_URL}/api/search/history`;
+
+  historyListEl.innerHTML = '<div class="loading-state"><span class="glyph">🐾</span><p>Carregando...</p></div>';
+
+  try {
+    const response = await fetch(url);
+
+    if (!response.ok) {
+      historyListEl.innerHTML = '<div class="empty-state"><p>Erro ao carregar histórico.</p></div>';
+      return;
+    }
+
+    const historico = await response.json();
+    renderizarHistorico(historico);
+
+  } catch (erro) {
+    historyListEl.innerHTML = '<div class="empty-state"><p>Não foi possível conectar com a API.</p></div>';
+    console.error(erro);
+  }
+}
+
+
+btnBuscar.addEventListener('click', () => {
+  const termo = inputTermo.value;
+  buscarGatos(termo);
+});
+
+inputTermo.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') buscarGatos(inputTermo.value);
+});
+</script>
+</body>
+</html>
