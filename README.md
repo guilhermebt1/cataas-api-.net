@@ -1,13 +1,7 @@
 # Cataas Finder 🐱
 
-
-<<<<<<< HEAD
-![alt text](caatas.gif)
-=======
-![alt text](https://d2b6stxjw39da8.cloudfront.net/8x8wp%2Fpreview%2F80150145%2Fmain_large.gif?response-content-disposition=inline%3Bfilename%3D%22main_large.gif%22%3B&response-content-type=image%2Fgif&Expires=1786549011&Signature=VUoeUaO1zjZVmPKHUk2atvRgNW4HUlQEiIfc~9WTx~KYTfu5VVdAG3iIm-h6C9FQTmtz1Ixg-4BQFIFTye0LYSv9FE6sAriTTwQIN0JOO8kRQvafsj6WhUh7nV-F-7BiiQb~tlyGGqJAgFRGYJjlDitjDzNrULYphWBgvkypgBVX0jbWZz1G9vclpC8jbti2QVT0OQDqVo9RLEEeYuyivpCMuKexZPta-7TzFz~uhW~QMmBaDTRfDmVAQqEAJMAFT6NoH1~6GzrXQzBhQNSUJZjVloPyIrlXghaxAkvYP38cIc6A2LhVMWnwPpyQqs5LDCRnxL8nH3A6lLZcC-6~-A__&Key-Pair-Id=APKAJT5WQLLEOADKLHBQ)
->>>>>>> ec1ad5362c5d869d6c338443e511d45262e13e8f
-
 Aplicação full stack para buscar imagens de gatos por tags, usando a [Cataas API](https://cataas.com/). O projeto integra um frontend estático em HTML, CSS e JavaScript com uma API REST em ASP.NET Core, que consulta o serviço externo e registra o histórico das buscas em SQLite.
+![alt text](caatas.gif)
 
 Este repositório foi feito para representar meu aprendizado e portfólio com o ecossistema .NET. O foco é demonstrar integração com API externa, separação de responsabilidades, DTOs, injeção de dependência, Entity Framework Core, migrations e deploy.
 
